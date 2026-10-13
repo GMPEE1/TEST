@@ -33,18 +33,21 @@ const errorMessage = ref("");
 const checkUsers = async () => {
     errorMessage.value = "";
 
+    console.log(username.value);
+    console.log(password.value);
+
     try {
-        const response = await axios.port('http://localhost:3000/login', {
+        const response = await axios.post('http://localhost:3000/login', {
             username:username.value,
             password:password.value,
         });
 
-        localstorage.setItem('token',response.data.token);
+        localStorage.setItem('token',response.data.token);
 
         username.value = "";
         password.value = "";
 
-        router.push('./home.vue');
+        router.push('/home');
         
     } catch (error) {
         if (error.response && error.response.data) {

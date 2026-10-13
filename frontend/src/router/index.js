@@ -12,7 +12,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('../pages/login.vue'),
+      redirect: '/login'
     },
     {
       path:'/login',
