@@ -9,6 +9,11 @@
             <v-text-field label="username" type="text" color="#7C4DFF" prepend-inner-icon="mdi-account" variant="outlined" v-model="username"></v-text-field>
 
             <v-text-field label="password" type="password" color="#7C4DFF" prepend-inner-icon="mdi-key" variant="outlined" v-model="password"></v-text-field>
+            
+            <p v-if="errorMessage" color="#eeeee" class="errorMessage text-center">
+                {{ errorMessage }}
+            </p>
+            
             <v-btn block color="#7C4DFF" height="50px" @click="checkUsers">
                 Login
             </v-btn>
@@ -23,26 +28,50 @@ import axios from 'axios';
 import {useRouter} from 'vue-router'
 
 const router = useRouter();
-const username = ref("")
-const password = ref("")
+const username = ref("");
+const password = ref("");
+const errorMessage = ref("");
+const loginSuccess = ref("");
+
 
 const checkUsers = async () => {
+    errorMessage.value = "";
+    loginSuccess.value = "";
 
     console.log(username.value);
     console.log(password.value);
-
-    const response = await axios.post('http://localhost:3000/login', {
+    try {
+        const response = await axios.post('http://localhost:3000/login', {
         username: username.value,
         password: password.value,
     });
 
+    localStorage.setItem('token',response.data.token);
+    
     username.value = "";
     password.value = "";
 
     router.push('/home');
+    alert (response.data.msg);
+
+    }catch(error) {
+        if(error.response && error.response.data) {
+            errorMessage.value = error.response.data.msg;
+        }else{
+            errorMessage.value = "ไม่สามารถเชื่อมต่อเซิฟเวอร์ได้"
+        }
+        username.value ="";
+        password.value ="";
+    }
+    
 }
 </script>
 
 <style lang="scss" scoped>
-  
+
+  .errorMessage {
+    font-size: 12px;
+    color: #ff0000;
+  }
+
 </style>
